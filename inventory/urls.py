@@ -8,7 +8,8 @@ from .views import (
     ApplyDiscountCouponView,
     AddDiscountCouponView,
     ViewInventoryView,
-    ViewCartView
+    ViewCartView,
+    RemoveItemFromCartView
 )
 
 urlpatterns = [
@@ -19,4 +20,5 @@ urlpatterns = [
     path('add_discount_coupon/', AddDiscountCouponView.as_view(), name='add_discount_coupon'),
     path('view_inventory/', ViewInventoryView.as_view(), name='view_inventory'),
     path('view_cart/', ViewCartView.as_view(), name='view_cart'),
+    path('remove_item_from_cart/',RemoveItemFromCartView.as_view(), name='remove_item_from_cart'),
 ]

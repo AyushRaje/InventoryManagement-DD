@@ -72,35 +72,58 @@ class InventoryManagementSystem:
             cart.products[productId] = quantity
 
         cart.cartValue = self.evalute_cart_value(cart)
-        if not cart.appliedDiscount:
+        if not cart.appliedDiscounts:
             cart.discountedPrice = cart.cartValue
+        else:
+            cart.discountPrice = self.calculate_discount_price(cart,cart.appliedDiscounts)    
         self.inventory[productId].quantity -= quantity
         return {"message": f"Added {quantity} of {self.inventory[productId].name} to cart for customer {customerId}."}
+
+    def calculate_discount_price(self,cart,discountCoupon):
+        discountedPrice = (cart.cartValue * discountCoupon['discountPercentage'])/100
+        
+        if discountedPrice > cart.cartValue:
+            discountedPrice = 0
+        
+        elif discountedPrice > discountCoupon['maxDiscountCap'] :
+            discountedPrice = cart.cartValue - discountCoupon['maxDiscountCap']
+        
+        else:
+            discountedPrice = cart.cartValue - discountedPrice
+
+        return discountedPrice    
 
     def apply_discount_coupon(self, customerId, discountId):
         if discountId not in self.discountCoupons:
             return {"error": "Invalid discount coupon."}
         cart = self.carts[customerId]
 
-        if discountId in cart.appliedDiscounts:
+        if cart.appliedDiscounts and discountId in cart.appliedDiscounts:
             return {"error": "This coupon is already applied on this cart."}
-        cart.appliedDiscounts[discountId] = discountId
-        discountCoupon = self.discountCoupons[discountId]
-        discountedPrice = (cart.cartValue * discountCoupon.discountPercentage)/100
-        
-        if discountedPrice > cart.cartValue:
-            discountedPrice = 0
-        
-        elif discountedPrice > discountCoupon.maxDiscountCap :
-            discountedPrice = cart.cartValue - discountCoupon.maxDiscountCap
-        
-        else:
-            discountedPrice = cart.cartValue - discountedPrice
 
-        cart.discountedPrice = discountedPrice    
+        discountCoupon = self.discountCoupons[discountId]
+        cart.appliedDiscounts = discountCoupon.__dict__
+        cart.discountedPrice = self.calculate_discount_price(cart,cart.appliedDiscounts)    
 
         return {"message": f"Discount {discountId} applied to the cart."}
 
     def add_discount_coupon(self, discountId, discountPercentage, maxDiscountCap):
         self.discountCoupons[discountId] = DiscountCoupon(discountId, discountPercentage, maxDiscountCap)
-        return {"message": f"Added discount coupon with ID {discountId}."}
+        return {"message": f"Added discount coupon with Id {discountId}."}
+    
+    def remove_from_cart(self,customerId,productId,quantity):
+        if customerId not in self.carts:
+            return {"error": f"Cart for this customer does not exists."}
+        if not productId in self.carts[customerId].products:
+            return {"error": f"Product does not exists in cart."}
+        if quantity > self.carts[customerId].products[productId]:
+            return {"error": f"Quantity of product to remove is greater than quantity in cart."}
+        
+        if quantity == self.carts[customerId].products[productId]:
+            del self.carts[customerId].products[productId]
+        else:
+            self.carts[customerId].products[productId]-=quantity
+
+        self.carts[customerId].cartValue = self.evalute_cart_value(self.carts[customerId])
+        self.carts[customerId].discountedPrice = self.calculate_discount_price(self.carts[customerId],self.carts[customerId].appliedDiscounts)
+        return {"message": f"Removed {quantity} of {productId} from the cart"}

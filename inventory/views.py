@@ -5,8 +5,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from inventory.models import InventoryManagementSystem
 import json
+from inventory.apps import ims
 
-ims = InventoryManagementSystem()
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class AddItemToInventoryView(View):
@@ -78,5 +79,16 @@ class ViewCartView(View):
             else:
                 return JsonResponse({"error": "Customer does not have a cart."}, status=404)
         else:
-            return JsonResponse({"error": "customerId parameter is required."}, status=400)      
+            return JsonResponse({"error": "customerId parameter is required."}, status=400)    
+          
+@method_decorator(csrf_exempt, name='dispatch') 
+class RemoveItemFromCartView(View):
+    def post(self,request):
+        data = json.loads(request.body)
+        customerId = data.get('customerId')
+        productId = data.get('productId')
+        quantity = data.get('quantity')
+        result = ims.remove_from_cart(customerId,productId,quantity)
+        return JsonResponse(result)
+
 
