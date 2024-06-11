@@ -46,9 +46,9 @@ class AddItemToCartView(View):
 class ApplyDiscountCouponView(View):
     def post(self, request):
         data = json.loads(request.body)
-        cartValue = data.get('cartValue')
         discountId = data.get('discountId')
-        result = ims.apply_discount_coupon(cartValue, discountId)
+        customerId = data.get('customerId')
+        result = ims.apply_discount_coupon(customerId, discountId)
         return JsonResponse(result)
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -74,7 +74,7 @@ class ViewCartView(View):
         if customer_id:
             if customer_id in ims.carts:
                 cart_data = {product_id: quantity for product_id, quantity in ims.carts[customer_id].products.items()}
-                return JsonResponse({"customerId": customer_id, "cart": cart_data,"cart_value":ims.carts[customer_id].cart_value})
+                return JsonResponse({"customerId": customer_id, "cart": cart_data,"cart_value":ims.carts[customer_id].cartValue,"discounted_value":ims.carts[customer_id].discountedPrice})
             else:
                 return JsonResponse({"error": "Customer does not have a cart."}, status=404)
         else:

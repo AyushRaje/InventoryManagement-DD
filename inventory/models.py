@@ -9,8 +9,9 @@ class Cart:
     def __init__(self, customerId):
         self.customerId = customerId
         self.products = {}
-        self.cart_value = 0
-        self.discounted_price = 0
+        self.cartValue = 0
+        self.discountedPrice = self.cartValue
+        self.appliedDiscounts = {}
 
 class DiscountCoupon:
     def __init__(self, discountId, discountPercentage, maxDiscountCap):
@@ -70,20 +71,35 @@ class InventoryManagementSystem:
         else:
             cart.products[productId] = quantity
 
-        cart.cart_value = self.evalute_cart_value(cart)
-
+        cart.cartValue = self.evalute_cart_value(cart)
+        if not cart.appliedDiscount:
+            cart.discountedPrice = cart.cartValue
         self.inventory[productId].quantity -= quantity
         return {"message": f"Added {quantity} of {self.inventory[productId].name} to cart for customer {customerId}."}
 
-    def apply_discount_coupon(self, cartValue, discountId):
+    def apply_discount_coupon(self, customerId, discountId):
         if discountId not in self.discountCoupons:
             return {"error": "Invalid discount coupon."}
+        cart = self.carts[customerId]
 
+        if discountId in cart.appliedDiscounts:
+            return {"error": "This coupon is already applied on this cart."}
+        cart.appliedDiscounts[discountId] = discountId
         discountCoupon = self.discountCoupons[discountId]
-        discountAmount = (discountCoupon.discountPercentage / 100) * cartValue
-        discountAmount = min(discountAmount, discountCoupon.maxDiscountCap)
-        discountedPrice = cartValue - discountAmount
-        return {"discounted_price": discountedPrice, "message": f"Discount applied: {discountAmount}. Total price after discount: {discountedPrice}."}
+        discountedPrice = (cart.cartValue * discountCoupon.discountPercentage)/100
+        
+        if discountedPrice > cart.cartValue:
+            discountedPrice = 0
+        
+        elif discountedPrice > discountCoupon.maxDiscountCap :
+            discountedPrice = cart.cartValue - discountCoupon.maxDiscountCap
+        
+        else:
+            discountedPrice = cart.cartValue - discountedPrice
+
+        cart.discountedPrice = discountedPrice    
+
+        return {"message": f"Discount {discountId} applied to the cart."}
 
     def add_discount_coupon(self, discountId, discountPercentage, maxDiscountCap):
         self.discountCoupons[discountId] = DiscountCoupon(discountId, discountPercentage, maxDiscountCap)
