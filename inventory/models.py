@@ -10,6 +10,7 @@ class Cart:
         self.customerId = customerId
         self.products = {}
         self.cart_value = 0
+        self.discounted_price = 0
 
 class DiscountCoupon:
     def __init__(self, discountId, discountPercentage, maxDiscountCap):
@@ -23,11 +24,16 @@ class InventoryManagementSystem:
         self.carts = {}
         self.discountCoupons = {}
 
-    def add_item_to_inventory(self, productId, name, quantity):
+    def add_item_to_inventory(self, productId, name, quantity,price):
         if productId in self.inventory:
             self.inventory[productId].quantity += quantity
+            if name != self.inventory[productId].name:
+                message = f"""Added {quantity} of {name} to inventory.\n 
+                Changed product name from  {self.inventory[productId].name} to {name}"""
+                self.inventory[productId].name = name
+                return {"message":message }
         else:
-            self.inventory[productId] = Product(productId, name, quantity)
+            self.inventory[productId] = Product(productId, name, quantity,price)
         return {"message": f"Added {quantity} of {name} to inventory."}
 
     def remove_item_from_inventory(self, productId, quantity):
@@ -41,10 +47,19 @@ class InventoryManagementSystem:
                 return {"error": "Not enough quantity to remove."}
         else:
             return {"error": "Product not found in inventory."}
+    
+    def evalute_cart_value(self,cart):
+        cart_value = 0
+        for productId in cart.products:
+            cart_value += (self.inventory[productId].price * cart.products[productId])
+        return cart_value    
 
     def add_item_to_cart(self, customerId, productId, quantity):
-        if productId not in self.inventory or self.inventory[productId].quantity < quantity:
-            return {"error": "Item not available in inventory."}
+        if productId not in self.inventory: 
+            return {"error": "Product does not exist in inventory."}
+
+        if self.inventory[productId].quantity < quantity:
+           return {"error": "Quantity requested is not available in inventory"} 
 
         if customerId not in self.carts:
             self.carts[customerId] = Cart(customerId)
@@ -54,6 +69,8 @@ class InventoryManagementSystem:
             cart.products[productId] += quantity
         else:
             cart.products[productId] = quantity
+
+        cart.cart_value = self.evalute_cart_value(cart)
 
         self.inventory[productId].quantity -= quantity
         return {"message": f"Added {quantity} of {self.inventory[productId].name} to cart for customer {customerId}."}
