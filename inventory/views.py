@@ -133,4 +133,15 @@ class RemoveDiscountFromCartView(View):
             return JsonResponse({"error":str(e)})
 
         return JsonResponse(result)
-
+    
+@method_decorator(csrf_exempt, name='dispatch') 
+class ResetInventoryView(View):
+    def post(self,request):
+        try:
+            ims.inventory = {}
+            ims.carts = {}
+            ims.discountCoupons = {}
+        except Exception as e:
+            return JsonResponse({"error":str(e)})
+        
+        return JsonResponse({"message":"Inventory System reset"})

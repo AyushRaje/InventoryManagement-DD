@@ -10,7 +10,8 @@ from .views import (
     ViewInventoryView,
     ViewCartView,
     RemoveItemFromCartView,
-    RemoveDiscountFromCartView
+    RemoveDiscountFromCartView,
+    ResetInventoryView
 )
 
 urlpatterns = [
@@ -23,5 +24,5 @@ urlpatterns = [
     path('view_cart/', ViewCartView.as_view(), name='view_cart'),
     path('remove_item_from_cart/',RemoveItemFromCartView.as_view(), name='remove_item_from_cart'),
     path('remove_discount_from_cart/',RemoveDiscountFromCartView.as_view(), name='remove_discount_from_cart'),
-    
+    path('reset_inventory/',ResetInventoryView.as_view(), name='reset_inventory'),
 ]
