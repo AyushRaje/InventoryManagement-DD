@@ -82,7 +82,7 @@ Since we are not using a database, we simulate the models using Python classes. 
     - quantity: The available quantity of the product in the inventory.
     - price: price of 1 unit of product.
 - Methods: None
-  ### 2. Cart
+### 2. Cart
   
 - Purpose: Represents a customer's shopping cart.
 - Attributes:
