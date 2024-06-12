@@ -119,34 +119,6 @@ Since we are not using a database, we simulate the models using Python classes. 
   - remove_from_cart(customerId, productId, quantity): Removes a specified quantity of a product from a customer's cart.
   - view_cart(customerId): Returns the details of the customer's cart, including products, cart value, and discounted value.
 
-## Edge Cases Covered
-### 1. Adding Items to Inventory:
-
-- Adding a new product with an existing product ID updates the quantity and optionally the name.
-- Adding a product with a zero or negative quantity is handled.
-### 2. Removing Items from Inventory:
-
-- Attempting to remove more items than available in the inventory returns an error.
-- Removing items from a product that does not exist in the inventory returns an error.
-### 3. Adding Items to Cart:
-
-- Attempting to add a product that does not exist in the inventory returns an error.
-- Attempting to add more items to the cart than available in the inventory returns an error.
-### 4. Applying Discount Coupons:
-
-- Applying a non-existent discount coupon returns an error.
-- Applying a discount coupon that is already applied to the cart returns an error.
-- The discounted price cannot be more than the cart value.
-### 5. Removing Items from Cart:
-
-- Attempting to remove more items from the cart than available returns an error.
-- Removing a product that does not exist in the cart returns an error.
-### 6. Removing Discount from Cart:
-
-- Removing a discount from a cart that does not exist returns an error.
-### 7. Viewing Cart:
-- Viewing a cart that does not exist returns an error. 
-
 ## Testing the APIs
 You can test the APIs using tools like Postman or curl. Below are some example requests:
 
@@ -237,5 +209,35 @@ curl -X POST http://127.0.0.1:8000/api/reset_inventory/
 ```
 curl -X GET http://127.0.0.1:8000/api/view_inventory/
 
-
 ```
+
+
+## Edge Cases Covered
+### 1. Adding Items to Inventory:
+
+- Adding a new product with an existing product ID updates the quantity and optionally the name.
+- Adding a product with a zero or negative quantity is handled.
+### 2. Removing Items from Inventory:
+
+- Attempting to remove more items than available in the inventory returns an error.
+- Removing items from a product that does not exist in the inventory returns an error.
+### 3. Adding Items to Cart:
+
+- Attempting to add a product that does not exist in the inventory returns an error.
+- Attempting to add more items to the cart than available in the inventory returns an error.
+### 4. Applying Discount Coupons:
+
+- Applying a non-existent discount coupon returns an error.
+- Applying a discount coupon that is already applied to the cart returns an error.
+- The discounted price cannot be more than the cart value.
+### 5. Removing Items from Cart:
+
+- Attempting to remove more items from the cart than available returns an error.
+- Removing a product that does not exist in the cart returns an error.
+### 6. Removing Discount from Cart:
+
+- Removing a discount from a cart that does not exist returns an error.
+### 7. Viewing Cart:
+- Viewing a cart that does not exist returns an error. 
+
+
