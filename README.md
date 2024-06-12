@@ -9,6 +9,9 @@ The project is deployed in **Vercel** and the postman collection for the same is
 <br>
 https://www.postman.com/altimetry-participant-28686498/workspace/public-projects/collection/28653510-0088f122-3830-4b0c-b935-8f3468dd5eb3?action=share&creator=28653510
 
+## Demo/Implementation Video:
+https://drive.google.com/file/d/1xksFlEXF4cc1mXCsUK5UGXOVH5WbIV-B/view?usp=sharing
+
 ## Setup
 1. Clone the repository:
 ```
