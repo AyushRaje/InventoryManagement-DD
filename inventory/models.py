@@ -49,6 +49,16 @@ class InventoryManagementSystem:
         else:
             return {"error": "Product not found in inventory."}
     
+    def remove_discount_from_cart(self,customerId):
+        if customerId not in self.carts:
+            return {"error": "Cart for this customer does not exists."}
+
+        cart = self.carts[customerId]
+        cart.discountedPrice = cart.cartValue
+        cart.appliedDiscounts = {}
+
+        return {"message": "Discount removed from the cart."}
+
     def evalute_cart_value(self,cart):
         cart_value = 0
         for productId in cart.products:
