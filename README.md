@@ -149,16 +149,7 @@ Since we are not using a database, we simulate the models using Python classes. 
 
 ## Testing the APIs
 You can test the APIs using tools like Postman or curl. Below are some example requests:
-### 1. Add item to inventory:
-```
-curl -X POST http://127.0.0.1:8000/api/add_item_to_inventory/ -H "Content-Type: application/json" -d '{
-    "productId": "p1",
-    "name": "Laptop",
-    "quantity": 10,
-    "price": 50000
-}'
 
-```
 ### 1. Add item to inventory:
 ```
 curl -X POST http://127.0.0.1:8000/api/add_item_to_inventory/ -H "Content-Type: application/json" -d '{
@@ -240,5 +231,11 @@ curl -X POST http://127.0.0.1:8000/api/remove_discount_from_cart/ -H "Content-Ty
 ### 10. Remove Discount from Cart:
 ```
 curl -X POST http://127.0.0.1:8000/api/reset_inventory/
+
+```
+### 11. View Inventory:
+```
+curl -X GET http://127.0.0.1:8000/api/view_inventory/
+
 
 ```
