@@ -1,4 +1,4 @@
-from inventory.models import InventoryManagementSystem
+from models import InventoryManagementSystem
 
 if __name__ == '__main__':
     ims = InventoryManagementSystem()

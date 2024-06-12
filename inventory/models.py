@@ -90,16 +90,19 @@ class InventoryManagementSystem:
         return {"message": f"Added {quantity} of {self.inventory[productId].name} to cart for customer {customerId}."}
 
     def calculate_discount_price(self,cart,discountCoupon):
-        discountedPrice = (cart.cartValue * discountCoupon['discountPercentage'])/100
-        
-        if discountedPrice > cart.cartValue:
-            discountedPrice = 0
-        
-        elif discountedPrice > discountCoupon['maxDiscountCap'] :
-            discountedPrice = cart.cartValue - discountCoupon['maxDiscountCap']
-        
+        if discountCoupon:
+            discountedPrice = (cart.cartValue * discountCoupon['discountPercentage'])/100
+            
+            if discountedPrice > cart.cartValue:
+                discountedPrice = 0
+            
+            elif discountedPrice > discountCoupon['maxDiscountCap'] :
+                discountedPrice = cart.cartValue - discountCoupon['maxDiscountCap']
+            
+            else:
+                discountedPrice = cart.cartValue - discountedPrice
         else:
-            discountedPrice = cart.cartValue - discountedPrice
+            discountedPrice = cart.cartValue        
 
         return discountedPrice    
 
@@ -137,3 +140,10 @@ class InventoryManagementSystem:
         self.carts[customerId].cartValue = self.evalute_cart_value(self.carts[customerId])
         self.carts[customerId].discountedPrice = self.calculate_discount_price(self.carts[customerId],self.carts[customerId].appliedDiscounts)
         return {"message": f"Removed {quantity} of {productId} from the cart"}
+    
+    def view_cart(self,customerId):
+        if customerId in self.carts:
+            cart_data = {product_id: quantity for product_id, quantity in self.carts[customerId].products.items()}
+            return {"customerId": customerId, "cart": cart_data,"cart_value":self.carts[customerId].cartValue,"discounted_value":self.carts[customerId].discountedPrice}
+        else:
+            return {"error": "Customer does not have a cart."}
