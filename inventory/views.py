@@ -19,6 +19,8 @@ class AddItemToInventoryView(View):
             name = data.get('name')
             quantity = data.get('quantity')
             price = data.get('price')
+            if quantity <=0 or price<0:
+                return JsonResponse({"error":"Invalid quantity or price"}) 
             result = ims.add_item_to_inventory(productId, name, quantity,price)
         except Exception as e:
             return JsonResponse({"error":str(e)})    
@@ -32,6 +34,8 @@ class RemoveItemFromInventoryView(View):
             data = json.loads(request.body)
             productId = data.get('productId')
             quantity = data.get('quantity')
+            if quantity <=0:
+                return JsonResponse({"error":"Invalid quantity"}) 
             result = ims.remove_item_from_inventory(productId, quantity)
 
         except Exception as e:
@@ -47,6 +51,8 @@ class AddItemToCartView(View):
             customerId = data.get('customerId')
             productId = data.get('productId')
             quantity = data.get('quantity')
+            if quantity <=0:
+                return JsonResponse({"error":"Invalid quantity"}) 
             result = ims.add_item_to_cart(customerId, productId, quantity)
         except Exception as e:
             return JsonResponse({"error":str(e)})  
@@ -75,6 +81,9 @@ class AddDiscountCouponView(View):
             discountId = data.get('discountId')
             discountPercentage = data.get('discountPercentage')
             maxDiscountCap = data.get('maxDiscountCap')
+
+            if discountPercentage <=0 or maxDiscountCap <=0:
+                return JsonResponse({"error":"Invalid discount coupon details."}) 
             result = ims.add_discount_coupon(discountId, discountPercentage, maxDiscountCap)
         except Exception as e:
             return JsonResponse({"error":str(e)})
@@ -115,6 +124,8 @@ class RemoveItemFromCartView(View):
             customerId = data.get('customerId')
             productId = data.get('productId')
             quantity = data.get('quantity')
+            if quantity <=0:
+                return JsonResponse({"error":"Invalid quantity"}) 
             result = ims.remove_from_cart(customerId,productId,quantity)
         except Exception as e:
             return JsonResponse({"error":str(e)})    
