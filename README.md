@@ -203,7 +203,7 @@ curl -X POST http://127.0.0.1:8000/api/remove_discount_from_cart/ -H "Content-Ty
 }'
 
 ```
-### 10. Remove Discount from Cart:
+### 10. Reset the inventory :
 ```
 curl -X POST http://127.0.0.1:8000/api/reset_inventory/
 
